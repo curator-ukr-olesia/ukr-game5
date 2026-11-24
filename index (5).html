@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Числівник у Країні Див — квест ZNOHUB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --violet:#9B2FE0; --violet-deep:#4A1478; --accent:#A63CE0;
+  --bg:#F4E9FD; --surface:#FFFFFF; --line:#D8B4F5; --soft:#EBD7FB;
+  --text:#1E1428; --muted:#5E4A73; --red:#E01B1B; --green:#1F9D55;
+  --on-violet:#FFFFFF; --tile:#C79BEE; --tile-fail:#7A4FA0;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --violet:#B65CF2; --violet-deep:#2A0D47; --accent:#CC8CF7;
+    --bg:#170D22; --surface:#24172F; --line:#5B3A80; --soft:#33204A;
+    --text:#F3EAFB; --muted:#BFA8D6; --red:#FF5A5A; --green:#4FD18A;
+    --on-violet:#FFFFFF; --tile:#5B3A80; --tile-fail:#3A2450;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --violet:#B65CF2; --violet-deep:#2A0D47; --accent:#CC8CF7;
+  --bg:#170D22; --surface:#24172F; --line:#5B3A80; --soft:#33204A;
+  --text:#F3EAFB; --muted:#BFA8D6; --red:#FF5A5A; --green:#4FD18A;
+  --on-violet:#FFFFFF; --tile:#5B3A80; --tile-fail:#3A2450;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:"Onest",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:17px;line-height:1.55}
+button{font:inherit;color:inherit}
+button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:16px 18px 64px}
+
+/* top bar like the PDF header pill */
+.topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--soft);border-radius:999px;padding:8px 18px;margin-bottom:18px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--text)}
+.logo b{display:inline-block;width:.9em;height:.9em;border-radius:50%;background:var(--text);vertical-align:-.08em;margin:0 .02em;position:relative}
+.logo b::after{content:"";position:absolute;left:34%;top:24%;border-left:.32em solid var(--soft);border-top:.22em solid transparent;border-bottom:.22em solid transparent}
+.pill{background:var(--violet);color:var(--on-violet);border-radius:999px;padding:2px 14px;font-size:14px}
+.inv{margin-left:auto;display:flex;gap:14px;align-items:center;font-size:15px;color:var(--muted)}
+.inv span{display:flex;align-items:center;gap:5px}
+.inv strong{color:var(--text)}
+
+/* chevron banner like the PDF section headers */
+.banner{position:relative;border-radius:18px;padding:16px 64px;text-align:center;
+  color:var(--on-violet);font-weight:300;font-size:clamp(22px,3.4vw,32px);line-height:1.2;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80'%3E%3Cpath d='M40 0 L0 40 L40 80 M75 0 L35 40 L75 80 M110 0 L70 40 L110 80' fill='none' stroke='white' stroke-opacity='.14' stroke-width='22'/%3E%3C/svg%3E") left center/auto 100% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='80'%3E%3Cpath d='M10 0 L50 40 L10 80 M45 0 L85 40 L45 80 M80 0 L120 40 L80 80' fill='none' stroke='white' stroke-opacity='.14' stroke-width='22'/%3E%3C/svg%3E") right center/auto 100% no-repeat,
+    linear-gradient(90deg,var(--accent),var(--violet) 40%,var(--violet) 60%,var(--accent));
+  margin:0 0 18px}
+
+.card{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:20px 22px;margin-bottom:16px}
+.muted{color:var(--muted)}
+.hl{color:var(--accent)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1fr;gap:0;border-radius:28px;overflow:hidden;
+  background:var(--violet-deep);color:#fff;margin-bottom:20px}
+.hero-art{position:relative;min-height:240px;background:radial-gradient(circle at 70% 40%,#8E3BD6 0,#5A1C93 45%,#3B0F66 100%)}
+.hero-art svg{position:absolute;inset:0;width:100%;height:100%}
+.hero-body{background:var(--surface);color:var(--text);padding:22px 24px 26px;border-top-right-radius:28px;margin-top:-28px;position:relative}
+.hero h1{font-weight:300;font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.02em;margin:6px 0 14px}
+.dots{display:flex;gap:7px;align-items:center;margin-bottom:6px}
+.dots i{width:12px;height:12px;border-radius:50%;display:block}
+.story p{margin:0 0 .8em;max-width:68ch}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;
+  background:var(--violet);color:var(--on-violet);padding:12px 24px;font-weight:500;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* hub */
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.stop{background:var(--surface);border:1.5px solid var(--line);border-radius:22px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.stop[disabled]{cursor:not-allowed;opacity:.55}
+.stop .pic{background:var(--soft);border-radius:16px;height:150px;display:flex;align-items:center;justify-content:center}
+.stop .pic svg{height:140px;width:auto}
+.stop .num{font-size:14px;color:var(--accent);font-weight:500}
+.stop h3{margin:0;font-weight:500;font-size:19px;line-height:1.25}
+.stop .st{font-size:14px;color:var(--muted)}
+
+/* station */
+.speaker{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center}
+.speaker .pic{background:var(--soft);border-radius:20px;height:132px;display:flex;align-items:center;justify-content:center}
+.speaker .pic svg{height:124px;width:auto}
+.bubble{background:var(--soft);border-radius:20px;padding:14px 18px;position:relative}
+.bubble b{display:block;color:var(--accent);font-weight:500;margin-bottom:2px}
+.progress{display:flex;gap:6px;margin:4px 0 14px}
+.progress i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.progress i.on{background:var(--violet)}
+.q{font-weight:500;font-size:19px;margin:0 0 10px}
+.sent{border-left:4px solid var(--violet);background:var(--soft);border-radius:0 14px 14px 0;padding:10px 14px;font-style:italic;margin:0 0 14px}
+.src{font-size:13px;color:var(--muted);margin-top:10px}
+.opts{display:grid;gap:8px}
+.opt{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;text-align:left;
+  background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:10px 14px;cursor:pointer}
+.opt .l{width:32px;height:32px;border-radius:50%;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+.opt:hover:not([disabled]){border-color:var(--violet)}
+.opt[disabled]{cursor:default}
+.opt.gone{opacity:.3;text-decoration:line-through}
+.opt.ok{border-color:var(--green);background:color-mix(in srgb,var(--green) 12%,var(--surface))}
+.opt.ok .l{background:var(--green);color:#fff}
+.opt.bad{border-color:var(--red);background:color-mix(in srgb,var(--red) 10%,var(--surface))}
+.opt.bad .l{background:var(--red);color:#fff}
+.expl{margin-top:14px;border:1.5px dashed var(--line);border-radius:16px;padding:12px 16px}
+.expl .v{font-weight:700}
+.expl .v.y{color:var(--green)} .expl .v.n{color:var(--red)}
+.toolrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.clock{display:flex;justify-content:center;margin:0 0 14px}
+.clock svg{width:170px;height:170px}
+
+/* sort */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:44px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chip.sel{background:var(--violet);color:var(--on-violet);border-color:var(--violet)}
+.chip.ok{border-color:var(--green);color:var(--green)} .chip.bad{border-color:var(--red);color:var(--red)}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.bin{border:1.5px solid var(--line);border-radius:16px;padding:10px;min-height:96px;background:var(--soft);cursor:pointer;text-align:left}
+.bin h4{margin:0 0 6px;font-size:15px;font-weight:500;color:var(--accent)}
+.bin .chips{margin:0;min-height:0}
+.bin .chip{font-size:14px;padding:3px 10px}
+
+/* cipher */
+.ci{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.ci:last-child{border-bottom:0}
+.pair{display:flex;gap:6px;flex-wrap:wrap}
+.pair button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 12px;cursor:pointer}
+.pair button.sel{background:var(--violet);color:var(--on-violet);border-color:var(--violet)}
+.pair button.ok{border-color:var(--green)} .pair button.bad{border-color:var(--red)}
+.letters{display:flex;gap:8px;justify-content:center;margin:16px 0 6px}
+.letters span{width:46px;height:56px;border-radius:12px;background:var(--soft);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:var(--accent)}
+
+/* match grid */
+.mgrid{overflow-x:auto}
+.mgrid table{border-collapse:collapse;margin:8px 0}
+.mgrid td,.mgrid th{border:1.5px solid var(--line);width:46px;height:42px;text-align:center}
+.mgrid th{background:var(--violet);color:var(--on-violet);font-weight:500}
+.mgrid td button{width:100%;height:100%;border:0;background:transparent;cursor:pointer;font-size:20px}
+.mgrid td button.sel{background:var(--violet);color:var(--on-violet)}
+.mgrid td button.ok{background:var(--green);color:#fff}
+.mgrid td button.bad{background:var(--red);color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* map */
+.mapbox{position:relative;width:100%;max-width:360px;aspect-ratio:1;border-radius:18px;overflow:hidden;border:1.5px solid var(--line)}
+.mapbox svg.m{position:absolute;inset:0;width:100%;height:100%}
+.tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr)}
+.tiles i{background:var(--tile);border:1px solid var(--surface);display:flex;align-items:center;justify-content:center;font-style:normal;color:var(--on-violet);font-size:13px;transition:opacity .6s,transform .6s}
+.tiles i.open{opacity:0;transform:scale(.6)}
+.tiles i.fail{background:var(--tile-fail)}
+.side{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.legend{font-size:14px;color:var(--muted);margin-top:8px}
+.keys{display:flex;gap:8px;margin-top:6px}
+.keys svg{width:42px;height:42px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(140%);
+  background:var(--violet-deep);color:#fff;border-radius:999px;padding:10px 20px;transition:transform .35s;z-index:20;max-width:92vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.big{font-size:clamp(40px,8vw,72px);font-weight:300;line-height:1;color:var(--accent)}
+
+@media (max-width:760px){
+  .side{grid-template-columns:1fr}
+  .speaker{grid-template-columns:84px 1fr}
+  .speaker .pic{height:96px}.speaker .pic svg{height:88px}
+  .two{grid-template-columns:1fr}
+  .banner{padding:14px 40px}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:10px 12px 48px}
+  .topbar{border-radius:20px;padding:8px 14px}
+  .inv{margin-left:0;width:100%;justify-content:space-between}
+  .card{padding:16px 14px;border-radius:18px}
+  .hero-body{padding:18px 16px 22px}
+  .hero-art{min-height:190px}
+  .banner{padding:12px 26px;border-radius:14px}
+  .ci{grid-template-columns:1fr}
+  .letters{gap:5px}
+  .letters span{width:38px;height:46px;font-size:22px}
+  .opt{grid-template-columns:30px 1fr;padding:9px 10px}
+  .opt .l{width:28px;height:28px}
+  .clock svg{width:150px;height:150px}
+  .bins{grid-template-columns:1fr 1fr}
+  .toolrow .btn{width:100%;justify-content:center}
+  .mapbox{max-width:100%}
+  .q{font-size:17px}
+  .speaker{grid-template-columns:64px 1fr;gap:10px;align-items:start}
+  .speaker .pic{height:72px;border-radius:14px}.speaker .pic svg{height:66px}
+  .bubble{padding:12px 14px}
+}
+.toast{visibility:hidden}
+.toast.show{visibility:visible}
+@media (min-width:761px) and (max-width:1024px){
+  .side{grid-template-columns:minmax(0,1fr) 260px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <span class="logo">zn<b></b>hub.</span>
+    <span class="pill">українська мова</span>
+    <div class="inv" id="inv"></div>
+  </div>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ========== героїв намальовано вручну (оригінальні SVG) ========== */
+const ART = {
+rabbit: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" aria-label="Білий Кролик">
+  <ellipse cx="46" cy="30" rx="9" ry="28" fill="#fff" stroke="#4A1478" stroke-width="2.5" transform="rotate(-12 46 30)"/>
+  <ellipse cx="70" cy="28" rx="9" ry="28" fill="#fff" stroke="#4A1478" stroke-width="2.5" transform="rotate(10 70 28)"/>
+  <ellipse cx="46" cy="32" rx="4" ry="18" fill="#F3B7D8" transform="rotate(-12 46 32)"/>
+  <ellipse cx="70" cy="30" rx="4" ry="18" fill="#F3B7D8" transform="rotate(10 70 30)"/>
+  <rect x="34" y="88" width="52" height="54" rx="20" fill="#9B2FE0" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M60 88 L60 142" stroke="#4A1478" stroke-width="2"/>
+  <circle cx="60" cy="102" r="2.5" fill="#FFD54A"/><circle cx="60" cy="116" r="2.5" fill="#FFD54A"/>
+  <circle cx="58" cy="68" r="26" fill="#fff" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="49" cy="64" r="4" fill="#C2185B"/><circle cx="68" cy="64" r="4" fill="#C2185B"/>
+  <ellipse cx="58" cy="76" rx="4" ry="3" fill="#F48FB1"/>
+  <path d="M58 79 q-5 6 -10 2 M58 79 q5 6 10 2" fill="none" stroke="#4A1478" stroke-width="2"/>
+  <path d="M40 76 h-14 M40 80 h-12 M76 76 h14 M76 80 h12" stroke="#4A1478" stroke-width="1.5"/>
+  <circle cx="96" cy="112" r="15" fill="#FFD54A" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="96" cy="112" r="10" fill="#fff"/>
+  <path d="M96 112 V105 M96 112 L101 115" stroke="#4A1478" stroke-width="2" stroke-linecap="round"/>
+  <path d="M86 102 q-10 -6 -12 4" fill="none" stroke="#FFD54A" stroke-width="2.5"/>
+</svg>`,
+hatter: `<svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg" aria-label="Капелюшник">
+  <rect x="38" y="6" width="54" height="56" rx="6" fill="#4A1478"/>
+  <rect x="38" y="44" width="54" height="10" fill="#9B2FE0"/>
+  <rect x="70" y="30" width="18" height="14" fill="#fff" stroke="#4A1478" stroke-width="1.5" transform="rotate(8 79 37)"/>
+  <text x="79" y="41" font-size="8" text-anchor="middle" fill="#4A1478" font-family="Onest,sans-serif" transform="rotate(8 79 37)">10/6</text>
+  <ellipse cx="65" cy="62" rx="44" ry="8" fill="#4A1478"/>
+  <path d="M30 74 q-8 20 2 32 M100 74 q8 20 -2 32" fill="none" stroke="#E0702A" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="65" cy="88" r="27" fill="#FDE3CF" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="55" cy="84" r="6" fill="#fff" stroke="#4A1478" stroke-width="2"/><circle cx="56" cy="85" r="2.5" fill="#4A1478"/>
+  <circle cx="76" cy="84" r="6" fill="#fff" stroke="#4A1478" stroke-width="2"/><circle cx="75" cy="85" r="2.5" fill="#4A1478"/>
+  <path d="M52 99 q13 12 26 0" fill="#fff" stroke="#4A1478" stroke-width="2"/>
+  <path d="M50 118 l15 8 l15 -8 l-4 14 l-11 -6 l-11 6z" fill="#E01B1B" stroke="#4A1478" stroke-width="2"/>
+  <rect x="38" y="126" width="54" height="30" rx="12" fill="#9B2FE0" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M96 128 h20 v10 q0 10 -10 10 q-10 0 -10 -10z" fill="#fff" stroke="#4A1478" stroke-width="2"/>
+  <path d="M116 131 q7 0 6 5 q-1 4 -6 3" fill="none" stroke="#4A1478" stroke-width="2"/>
+  <path d="M102 122 q-3 -5 1 -9 M110 122 q-3 -5 1 -9" fill="none" stroke="#C79BEE" stroke-width="2"/>
+</svg>`,
+caterpillar: `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-label="Гусениця">
+  <path d="M10 92 q60 -60 120 0 z" fill="#E01B1B" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="40" cy="80" r="6" fill="#fff"/><circle cx="72" cy="66" r="7" fill="#fff"/><circle cx="104" cy="80" r="6" fill="#fff"/>
+  <rect x="56" y="92" width="28" height="52" rx="8" fill="#F4E9FD" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="32" cy="62" r="11" fill="#5FBF6A" stroke="#4A1478" stroke-width="2"/>
+  <circle cx="50" cy="56" r="12" fill="#6CCB76" stroke="#4A1478" stroke-width="2"/>
+  <circle cx="70" cy="50" r="12" fill="#5FBF6A" stroke="#4A1478" stroke-width="2"/>
+  <circle cx="88" cy="40" r="12" fill="#6CCB76" stroke="#4A1478" stroke-width="2"/>
+  <circle cx="98" cy="22" r="14" fill="#7AD684" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="93" cy="20" r="5" fill="none" stroke="#4A1478" stroke-width="2"/><circle cx="105" cy="20" r="5" fill="none" stroke="#4A1478" stroke-width="2"/>
+  <path d="M98 20 h2" stroke="#4A1478" stroke-width="2"/>
+  <path d="M93 29 q5 4 10 0" fill="none" stroke="#4A1478" stroke-width="2"/>
+  <path d="M92 9 q-4 -8 -10 -6 M104 9 q4 -8 10 -6" fill="none" stroke="#4A1478" stroke-width="2"/>
+  <text x="118" y="44" font-size="12" fill="#9B2FE0" font-family="Onest,sans-serif">хто?</text>
+</svg>`,
+cat: `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-label="Чеширський Кіт">
+  <path d="M22 50 L30 12 L52 34 Z" fill="#B65CF2" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M118 50 L110 12 L88 34 Z" fill="#B65CF2" stroke="#4A1478" stroke-width="2.5"/>
+  <ellipse cx="70" cy="62" rx="52" ry="40" fill="#B65CF2" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M40 30 q6 10 0 20 M70 24 q6 10 0 18 M100 30 q-6 10 0 20" fill="none" stroke="#7A1FC0" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="50" cy="56" rx="10" ry="12" fill="#FFE45C" stroke="#4A1478" stroke-width="2"/><ellipse cx="50" cy="56" rx="2.5" ry="9" fill="#4A1478"/>
+  <ellipse cx="90" cy="56" rx="10" ry="12" fill="#FFE45C" stroke="#4A1478" stroke-width="2"/><ellipse cx="90" cy="56" rx="2.5" ry="9" fill="#4A1478"/>
+  <path d="M28 74 q42 34 84 0 q-42 14 -84 0z" fill="#fff" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M40 79 v6 M52 83 v7 M64 85 v7 M76 85 v7 M88 83 v7 M100 79 v6" stroke="#4A1478" stroke-width="1.5"/>
+  <path d="M18 70 h-14 M20 76 h-14 M122 70 h14 M120 76 h14" stroke="#4A1478" stroke-width="1.5"/>
+  <g opacity=".35"><ellipse cx="70" cy="126" rx="38" ry="20" fill="#B65CF2"/><path d="M106 126 q24 -4 22 -30" fill="none" stroke="#B65CF2" stroke-width="8" stroke-linecap="round"/></g>
+</svg>`,
+queen: `<svg viewBox="0 0 130 160" xmlns="http://www.w3.org/2000/svg" aria-label="Королева Чирв">
+  <path d="M36 40 L42 12 L54 30 L65 8 L76 30 L88 12 L94 40 Z" fill="#FFD54A" stroke="#4A1478" stroke-width="2.5"/>
+  <circle cx="65" cy="10" r="4" fill="#E01B1B"/>
+  <path d="M30 60 q0 -24 35 -22 q35 -2 35 22 v20 h-70z" fill="#4A1478"/>
+  <circle cx="65" cy="64" r="24" fill="#FDE3CF" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M52 58 l8 3 M78 58 l-8 3" stroke="#4A1478" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="56" cy="64" r="2.5" fill="#4A1478"/><circle cx="74" cy="64" r="2.5" fill="#4A1478"/>
+  <path d="M57 76 q8 -5 16 0" fill="none" stroke="#E01B1B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M42 88 h46 l14 66 h-74z" fill="#E01B1B" stroke="#4A1478" stroke-width="2.5"/>
+  <path d="M65 88 v66" stroke="#fff" stroke-width="6"/>
+  <path d="M65 128 c-12 -10 -12 -20 -4 -20 q4 0 4 5 q0 -5 4 -5 c8 0 8 10 -4 20z" fill="#fff"/>
+  <path d="M40 94 l-16 26 M90 94 l16 26" stroke="#FDE3CF" stroke-width="7" stroke-linecap="round"/>
+  <path d="M104 116 v-32" stroke="#FFD54A" stroke-width="4"/>
+  <path d="M104 84 c-8 -7 -8 -14 -2 -14 q2 0 2 3 q0 -3 2 -3 c6 0 6 7 -2 14z" fill="#E01B1B"/>
+</svg>`
+};
+
+const KEY = (c)=>`<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="15" cy="24" r="10" fill="none" stroke="${c}" stroke-width="5"/><path d="M25 24 H44 M38 24 v8 M43 24 v6" stroke="${c}" stroke-width="5" stroke-linecap="round"/></svg>`;
+
+function clockSVG(h,m){
+  const ha=((h%12)+m/60)*30, ma=m*6;
+  let ticks="";
+  for(let i=0;i<12;i++){const a=i*30*Math.PI/180;const r1=i%3?78:72;
+    ticks+=`<line x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+86*Math.sin(a)}" y2="${100-86*Math.cos(a)}" stroke="currentColor" stroke-width="${i%3?2:4}"/>`;}
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="Годинник" style="color:var(--text)">
+    <circle cx="100" cy="100" r="94" fill="var(--surface)" stroke="var(--violet)" stroke-width="8"/>${ticks}
+    <line x1="100" y1="100" x2="${100+48*Math.sin(ha*Math.PI/180)}" y2="${100-48*Math.cos(ha*Math.PI/180)}" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+    <line x1="100" y1="100" x2="${100+74*Math.sin(ma*Math.PI/180)}" y2="${100-74*Math.cos(ma*Math.PI/180)}" stroke="var(--violet)" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="100" cy="100" r="7" fill="var(--violet)"/></svg>`;
+}
+
+/* ========== станції та завдання ========== */
+const L = ["А","Б","В","Г","Д"];
+const STATIONS = [
+{
+  id:"hatter", hero:"hatter", name:"Божевільне чаювання", who:"Капелюшник",
+  topic:"Позначення часу",
+  intro:"Ох, нарешті гість! У нас завжди шоста година, бо Час на мене образився. А ще мій годинник почав говорити «без п’яти сім» — жах! Допоможи мені пригадати, як правильно казати про час, і отримаєш ключ від Чайного буфета.",
+  outro:"Чудово! Тепер мій годинник каже «за п’ять сьома», як і належить. Тримай перший ключ — він пахне бергамотом.",
+  tasks:[
+    {type:"mcq", clock:[6,15], q:"Розгляньте годинник. Правильними відповідями на запитання «Котра година?» будуть усі, ОКРІМ",
+     opts:["шоста година п’ятнадцять хвилин","п’ятнадцять хвилин сьомої","п’ятнадцять хвилин по шостій","чверть на сьому","чверть по шостій"], a:1,
+     ex:"У конструкції «п’ятнадцять хвилин сьомої» бракує прийменника. Правильно: «п’ятнадцять хвилин на сьому» або «по шостій».", src:"29190"},
+    {type:"mcq", clock:[10,40], q:"На годиннику 10:40. Правильну відповідь на запитання «Котра година?» наведено в рядку",
+     opts:["десять годин сорок хвилин","без двадцяти одинадцята","за двадцять одинадцята","сорок хвилин по десятій","двадцять до одинадцяти"], a:2,
+     ex:"Години називаємо порядковим числівником, «без» не вживаємо, а після 30 хвилин — «за» або «до»: за двадцять одинадцята, двадцять до одинадцятої.", src:"37849"},
+    {type:"mcq", q:"Граматично правильно утворено словосполучення",
+     opts:["розпочнеться в четвертій годині","зустрінемося за чверть дев’ята","тренувалися до пів сьомої години","прибігти без десяти хвилин третя","зателефонуйте після дев’яти"], a:1,
+     ex:"З часом уживаємо «о», а не «в»; після «пів» — «на»: до пів на сьому; «без» — калька; «після дев’ятої» — порядковий числівник. Правильно лише «за чверть дев’ята».", src:"29999"},
+    {type:"mcq", q:"Укажіть правильний варіант послідовного заповнення пропусків.",
+     sent:"Зустрінемось ___ біля пам’ятника ___.",
+     opts:["у пів сьомої, Лесі Українки","о пів на сьому, Лесі Українці","о пів по шостій, Лесі Українки","у шість тридцять, Лесі Українки","у пів до сьомої, Лесі Українці"], a:1,
+     ex:"Час — з прийменником «о»: о пів на сьому. Пам’ятник (кому?) Лесі Українці — давальний відмінок.", src:"30447"}
+  ]
+},
+{
+  id:"caterpillar", hero:"caterpillar", name:"Гриб мудрої Гусениці", who:"Гусениця",
+  topic:"Числівник як частина мови",
+  intro:"Хто… ти… така? А хто такий числівник? Не знаєш? Тоді я не скажу, з якого боку гриба відкусити, щоб пройти далі. Відрізни справжні числівники від самозванців — прислівників, іменників і прикметників.",
+  outro:"Хм. Ти таки знаєш, хто ти. Відкуси з лівого боку гриба — і ось тобі другий ключ.",
+  tasks:[
+    {type:"mcq", q:"Числівник є в реченні",
+     opts:["Тричі крига замерзала, тричі розтавала.","Козацький полк ділився на сотні.","На репетицію прийшло п’ятеро хлопців.","Раптово вдарив двадцятиградусний мороз."], a:2,
+     ex:"«П’ятеро» — збірний числівник. «Тричі» — прислівник, «сотні» — іменник, «двадцятиградусний» — прикметник.", src:"29414"},
+    {type:"sort", q:"Розклади слова по полицях Гусениці. Торкнися слова, а потім — полиці.",
+     bins:["власне кількісний","дробовий","збірний","неозначено-кількісний","порядковий","не числівник"],
+     items:[["сто",0],["три сотих",1],["одна четверта",1],["семеро",2],["двоє",2],["кілька",3],["багато (людей)",3],["дев’ятнадцятий",4],["тисячний",4],["двійка",5],["по-перше",5],["двоповерховий",5]],
+     ex:"«Двійка» — іменник, «по-перше» — прислівник, «двоповерховий» — прикметник. «Багато» буде числівником саме тоді, коли стоїть біля іменника: багато людей."},
+    {type:"mcq", q:"Числівник є в реченні",
+     opts:["Лінивий двічі ходить, скупий двічі платить.","Майнули в повітрі десятки крил — і голубина зграя знялась у блакить.","Дуб уже ріс кількадесят років.","Стокілометрову відстань подолали дуже швидко."], a:2,
+     ex:"«Кількадесят» — неозначено-кількісний числівник. «Двічі» — прислівник, «десятки» — іменник, «стокілометрову» — прикметник.", src:"29444"},
+    {type:"mcq", q:"Правильно поєднано числівник з іменником у всіх словосполученнях рядка",
+     opts:["чотири лікарі, шестеро штанів, три гектара","троє колег, обидві футболісти, п’ять зірок","четверо вікон, три кошенят, два гігабайти","семеро коней, двоє продавчинь, півтора року","п’ятеро програмістів, чотири учні, двоє воріт"], a:4,
+     ex:"Збірні числівники не поєднуються з іменниками жіночого роду (двоє продавчинь — помилка), а після 2, 3, 4 — Н. в. множини: три гектари, обидва футболісти.", src:"37285"}
+  ]
+},
+{
+  id:"cat", hero:"cat", name:"Дерево Чеширського Кота", who:"Чеширський Кіт",
+  topic:"Відмінювання числівників",
+  intro:"Мур-р. Усі тут трохи не при собі, а числівники — особливо: то «п’ятидесяти» скажуть, то «шестистами». Я сховав ключ у шифрі. Обирай правильні форми — кожна дасть букву. Помилишся — і моя усмішка зникне разом із відповіддю.",
+  outro:"Сорока! І птах, і числівник, що в непрямих відмінках має лише закінчення -а. Тримай третій ключ, а я поки зникну… крім усмішки.",
+  tasks:[
+    {type:"cipher", q:"Обери правильну форму числівника в кожному реченні. Букви складуть слово.",
+     word:"СОРОКА",
+     rows:[
+       ["Запорозька чайка вміщала до ___ козаків. (50)",["п’ятдесяти","С"],["п’ятидесяти","Л"]],
+       ["До королівського саду близько ___ кроків. (700)",["сімсот","Е"],["семисот","О"]],
+       ["Королева пишається ___ трояндовими кущами. (600)",["шістьмастами","Р"],["шестистами","Т"]],
+       ["Не було майже ___ гостей, які запізнилися на чай. (90)",["дев’яносто","Ч"],["дев’яноста","О"]],
+       ["Кіт усміхнувся ___ зубами. (7)",["сімома","К"],["сіма","И"]],
+       ["Казку надруковано на ___ сторінках. (300)",["трьохсот","У"],["трьохстах","А"]]
+     ],
+     ex:"У десятках 50–80 відмінюється лише «десят»: п’ятдесяти. Сотні 500–900 у Р., Д., М. в. мають у першій частині «и»: семисот; в Ор. в. — шістьмастами (шістьомастами). Сорок, дев’яносто, сто в непрямих відмінках — на -а. Ор. в. від «сім» — сьома або сімома. М. в. сотень — на -стах."},
+    {type:"mcq", q:"Допущено помилку у відмінюванні числівника",
+     opts:["шестистам чотирнадцятьом","семидесятьох п’ятьох","на вісімдесяти дев’яти","сорока чотирма","чотирьомстам трьом"], a:1,
+     ex:"У числівниках на -десят змінюється лише друга частина: сімдесятьох, а не «семидесятьох».", src:"29422"},
+    {type:"mcq", q:"Форму числівника в орудному відмінку правильно зазначено в рядку",
+     opts:["сьомастами п’ятидесятьома чотирьома","семистами п’ятдесятьма чотирма","сьомастами п’ятдесятьма чотирьома","семистами п’ятидесятьма чотирма","сімомастами п’ятдесятьома чотирма"], a:4,
+     ex:"Ор. в.: сімсот — сьомастами або сімомастами; п’ятдесят — п’ятдесятьма (п’ятдесятьома); чотири — лише чотирма.", src:"37976"},
+    {type:"mcq", q:"Замість пропуску має бути слово",
+     sent:"Зміни до Конституції ухвалюються голосами … народних депутатів.",
+     opts:["триста","трьохста","трьохсот","трьохстох","трьомастами"], a:2,
+     ex:"Голосами (кого? скількох?) — родовий відмінок: трьохсот. Обидві частини сотні відмінюються: трьох + сот.", src:"29647"}
+  ]
+},
+{
+  id:"queen", hero:"queen", name:"Суд Королеви Чирв", who:"Королева Чирв",
+  topic:"Узгодження числівників з іменниками",
+  intro:"Голови з плечей! Мої карти-садівники написали «три стола» й «півтора години»! Ти будеш присяжним. Доведи, що знаєш, як числівник дружить з іменником, — і я віддам останній ключ від дверцят у Сад.",
+  outro:"Хм… Вирок: невинна! Тобто невинний! Тобто — молодець. Забирай четвертий ключ, поки я не передумала.",
+  tasks:[
+    {type:"match", q:"Установіть відповідність між числівником і формою іменника, з якою він правильно поєднується.",
+     left:["півтора","три з половиною","шість","двадцять одна"],
+     right:["тижні","подруга","кілограма","метрів"],
+     a:[2,0,3,1],
+     ex:"Півтора + Р. в. однини ч. р.: півтора кілограма. «З половиною» відкидаємо й дивимося на основний числівник: три тижні, тож три з половиною тижні. Після 5 і більше — Р. в. множини: шість метрів. Складений числівник узгоджуємо за останнім словом: двадцять одна подруга, як «одна подруга»."},
+    {type:"mcq", q:"НЕПРАВИЛЬНО узгоджено числівник з іменником у словосполученні",
+     opts:["триста грам","обидва учасники","два з половиною роки","троє переможців","півтора тижня"], a:0,
+     ex:"Після 5 і більше — Р. в. множини: триста грамів.", src:"37870"},
+    {type:"mcq", q:"НЕПРАВИЛЬНО узгоджено іменник із числівником у словосполученні, позначеному цифрою",
+     sent:"Для приготування шарлотки вам знадобиться (1) півтора кілограма яблук, (2) шість яєць, (3) дві склянки борошна, (4) два пакетика розпушувача тіста, (5) двісті грамів цукру.",
+     opts:["1","2","3","4","5"], a:3,
+     ex:"Після 2, 3, 4 — Н. в. множини: два пакетики.", src:"38818"},
+    {type:"mcq", q:"Правильним є варіант послідовного заповнення пропусків",
+     sent:"До початку матчу залишається ___, але вже понад ___ уклали контракти з ___.",
+     opts:["півтора місяці, ста телеканалів, тисячею двісті рекламодавців","півтора місяця, сто телеканалів, тисячею двомастами рекламодавцями","півтора місяця, ста телеканалів, тисячею двомастами рекламодавців","півтора місяців, сто телеканалів, тисяча двостами рекламодавцями","півтори місяці, сто телеканалів, тисяча двісті рекламодавців"], a:1,
+     ex:"Півтора + Р. в. однини: півтора місяця. «Понад» + Зн. в.: понад сто. Ор. в.: тисячею двомастами рекламодавцями.", src:"30519"}
+  ]
+}];
+
+/* ========== стан ========== */
+const STORE="znohub-wonderland-v1";
+const fresh=()=>({screen:"intro",st:0,t:0,res:Array(16).fill(null),potions:2,keys:0,done:[false,false,false,false]});
+let S=fresh();
+try{const raw=localStorage.getItem(STORE); if(raw){const p=JSON.parse(raw); if(p&&Array.isArray(p.res)&&p.res.length===16) S=Object.assign(fresh(),p);}}catch(e){}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}
+
+let T={}; // тимчасовий стан поточного завдання
+const app=document.getElementById("app");
+const idx=(s,t)=>s*4+t;
+const score=()=>S.res.filter(x=>x===true).length;
+
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove("show"),2600);}
+
+function renderInv(){
+  document.getElementById("inv").innerHTML=
+   `<span title="Ключі">🗝️ <strong>${S.keys}</strong>/4</span>
+    <span title="Фрагменти мапи">🧩 <strong>${score()}</strong>/16</span>
+    <span title="Пляшечки «Випий мене»: прибирають дві хибні відповіді">🧪 <strong>${S.potions}</strong></span>`;
+}
+
+function mapSVG(){
+  return `<svg class="m" viewBox="0 0 400 400" aria-hidden="true">
+    <rect width="400" height="400" fill="var(--soft)"/>
+    <path d="M30 360 C120 330 60 250 150 230 S300 260 280 160 S170 90 250 50 S360 60 370 30" fill="none" stroke="var(--violet)" stroke-width="5" stroke-dasharray="10 9"/>
+    <g transform="translate(40 300)"><path d="M0 20 h40 v14 q0 14 -20 14 q-20 0 -20 -14z" fill="#fff" stroke="var(--violet-deep)" stroke-width="3"/><path d="M40 24 q12 0 10 10 q-2 6 -10 4" fill="none" stroke="var(--violet-deep)" stroke-width="3"/></g>
+    <g transform="translate(120 170)"><path d="M0 30 q30 -40 60 0z" fill="#E01B1B" stroke="var(--violet-deep)" stroke-width="3"/><rect x="22" y="30" width="16" height="26" fill="#fff" stroke="var(--violet-deep)" stroke-width="3"/></g>
+    <g transform="translate(250 140)"><path d="M0 20 q30 30 60 0 q-30 10 -60 0z" fill="#fff" stroke="var(--violet-deep)" stroke-width="3"/><circle cx="14" cy="6" r="5" fill="#FFE45C" stroke="var(--violet-deep)" stroke-width="2"/><circle cx="46" cy="6" r="5" fill="#FFE45C" stroke="var(--violet-deep)" stroke-width="2"/></g>
+    <g transform="translate(200 30)"><path d="M30 44 c-26 -20 -26 -44 -8 -44 q8 0 8 10 q0 -10 8 -10 c18 0 18 24 -8 44z" fill="#E01B1B" stroke="var(--violet-deep)" stroke-width="3"/></g>
+    <g transform="translate(330 8)"><rect x="0" y="0" width="34" height="48" rx="17" fill="#6CCB76" stroke="var(--violet-deep)" stroke-width="3"/><circle cx="26" cy="28" r="3" fill="#FFD54A"/></g>
+    <text x="300" y="80" font-family="Onest,sans-serif" font-size="18" fill="var(--violet-deep)">Сад</text>
+  </svg>`;
+}
+function mapHTML(){
+  const tiles=S.res.map((r,i)=>`<i class="${r===true?"open":r===false?"fail":""}">${r===false?"✕":i+1}</i>`).join("");
+  return `<div class="mapbox">${mapSVG()}<div class="tiles">${tiles}</div></div>
+   <div class="legend">Кожна правильна відповідь відкриває фрагмент мапи. Помилка залишає клаптик затертим, але дорога триває.</div>
+   <div class="keys">${[0,1,2,3].map(k=>KEY(k<S.keys?"#FFB300":"var(--line)")).join("")}</div>`;
+}
+
+/* ========== екрани ========== */
+function render(){renderInv();save();
+  if(S.screen==="intro") return intro();
+  if(S.screen==="hub") return hub();
+  if(S.screen==="task") return task();
+  if(S.screen==="stationEnd") return stationEnd();
+  if(S.screen==="final") return finale();
+}
+
+function intro(){
+  app.innerHTML=`
+  <section class="hero">
+    <div class="hero-art"><svg viewBox="0 0 900 260" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+      <defs><radialGradient id="hole" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#1A0530"/><stop offset="1" stop-color="#6A24A8"/></radialGradient></defs>
+      <ellipse cx="450" cy="210" rx="260" ry="80" fill="url(#hole)"/>
+      <g fill="none" stroke="#C79BEE" stroke-opacity=".45" stroke-width="2"><ellipse cx="450" cy="210" rx="200" ry="58"/><ellipse cx="450" cy="210" rx="140" ry="40"/><ellipse cx="450" cy="210" rx="80" ry="22"/></g>
+      <g font-family="Onest,sans-serif" font-weight="300" fill="#E9D3FB" fill-opacity=".8">
+        <text x="120" y="80" font-size="54" transform="rotate(-14 120 80)">½</text>
+        <text x="760" y="70" font-size="46" transform="rotate(12 760 70)">40</text>
+        <text x="250" y="140" font-size="34" transform="rotate(8 250 140)">VII</text>
+        <text x="640" y="150" font-size="38" transform="rotate(-10 640 150)">1½</text>
+        <text x="560" y="60" font-size="28">300</text>
+      </g>
+      <g transform="translate(395 30) rotate(-8)">${ART.rabbit.replace('<svg','<svg width="110" height="140"')}</g>
+    </svg></div>
+    <div class="hero-body">
+      <div class="dots"><i style="background:#F26B5B"></i><i style="background:#E8C04A"></i><i style="background:#5BC46A"></i> <span class="pill" style="margin-left:8px">квест · 11 клас</span></div>
+      <h1>Числівник у&nbsp;Країні Див</h1>
+      <div class="story">
+        <p>Вечір перед пробним НМТ. Ти гортаєш конспект про числівники, аж раптом повз вікно пробігає Білий Кролик із кишеньковим годинником і бурмоче: «Ой-ой, уже без п’ятнадцяти шість… тобто за чверть шоста! Королева буде гніватися!»</p>
+        <p>Ти кидаєшся за ним, послизаєшся — і летиш у кролячу нору. Унизу на тебе чекають крихітні зачинені дверцята до Королівського саду. На них чотири замки, а поруч записка: «Ключі розібрали мешканці Країни Див. Віддадуть лише тим, хто знає числівник».</p>
+        <p>Пройди чотири станції. За кожну правильну відповідь отримаєш <span class="hl">фрагмент мапи</span>, за кожну станцію — <span class="hl">ключ</span>, а за станцію без жодної помилки — ще одну <span class="hl">пляшечку «Випий мене»</span>: вона прибирає дві хибні відповіді, коли стає геть важко.</p>
+      </div>
+      <div class="row">
+        <button class="btn" id="go">${S.res.some(r=>r!==null)?"Продовжити пригоду":"Стрибнути в нору"}</button>
+        ${S.res.some(r=>r!==null)?`<button class="btn ghost" id="reset">Почати спочатку</button>`:""}
+      </div>
+    </div>
+  </section>`;
+  go.onclick=()=>{S.screen="hub";render();scrollTo(0,0)};
+  const r=document.getElementById("reset"); if(r) r.onclick=()=>{S=fresh();render()};
+}
+
+function hub(){
+  const next=S.done.indexOf(false);
+  app.innerHTML=`
+  <div class="banner">Мапа Країни Див</div>
+  <div class="side">
+    <div>
+      <div class="card speaker" style="margin-bottom:16px">
+        <div class="pic">${ART.rabbit}</div>
+        <div class="bubble"><b>Білий Кролик</b>${next===-1?"Усі ключі в тебе! Біжімо до дверцят, поки Королева не передумала!":next===0?"Спершу зазирни на чаювання до Капелюшника. Тільки не питай його, котра година, — він образиться!":"Мерщій! Наступна станція вже чекає, а я, здається, знову запізнююся."}</div>
+      </div>
+      <div class="path">
+        ${STATIONS.map((s,i)=>{
+          const open=i<=next||next===-1, done=S.done[i];
+          const got=S.res.slice(i*4,i*4+4).filter(x=>x===true).length;
+          return `<button class="stop" data-i="${i}" ${(!open||done)?"disabled":""}>
+            <div class="pic">${ART[s.hero]}</div>
+            <span class="num">Станція ${i+1} · ${s.who}</span>
+            <h3>${s.name}</h3>
+            <span class="st">${done?`Ключ отримано · ${got}/4`:open?s.topic:"🔒 Відкриється згодом"}</span>
+          </button>`}).join("")}
+      </div>
+      ${next===-1?`<div class="row" style="margin-top:18px"><button class="btn" id="fin">Відімкнути дверцята в Сад</button></div>`:""}
+    </div>
+    <aside class="card">${mapHTML()}</aside>
+  </div>`;
+  app.querySelectorAll(".stop").forEach(b=>b.onclick=()=>{S.st=+b.dataset.i;S.t=0;S.screen="task";T={};render();scrollTo(0,0)});
+  const f=document.getElementById("fin"); if(f) f.onclick=()=>{S.screen="final";render();scrollTo(0,0)};
+}
+
+function head(st){
+  const s=STATIONS[st];
+  return `<div class="banner">${s.topic}</div>
+  <div class="card speaker">
+    <div class="pic">${ART[s.hero]}</div>
+    <div class="bubble"><b>${s.who}</b>${S.t===0&&!T.answered?s.intro:pep(s)}</div>
+  </div>
+  <div class="progress">${[0,1,2,3].map(k=>`<i class="${k<=S.t?"on":""}"></i>`).join("")}</div>`;
+}
+function pep(s){
+  const lines={hatter:"Ще чашечку? Тоді наступне питання!",caterpillar:"Повільно… уважно… далі.",cat:"Не всі, які заблукали, — помиляються.",queen:"Наступне! І не змушуй мене чекати!"};
+  return lines[s.id];
+}
+
+function task(){
+  const s=STATIONS[S.st], tk=s.tasks[S.t];
+  const body = tk.type==="mcq"?mcq(tk):tk.type==="sort"?sortT(tk):tk.type==="cipher"?cipher(tk):match(tk);
+  app.innerHTML=`${head(S.st)}<section class="card">${body}<div id="after"></div></section>`;
+  bind(tk);
+  if(T.answered) showAfter(tk);
+}
+
+/* ---- MCQ ---- */
+function mcq(tk){
+  T.gone=T.gone||[];
+  return `${tk.clock?`<div class="clock">${clockSVG(tk.clock[0],tk.clock[1])}</div>`:""}
+  <p class="q">${tk.q}</p>${tk.sent?`<p class="sent">${tk.sent}</p>`:""}
+  <div class="opts">${tk.opts.map((o,i)=>{
+    let c=""; if(T.answered){ if(i===tk.a)c="ok"; else if(i===T.pick)c="bad"; } else if(T.gone.includes(i)) c="gone";
+    return `<button class="opt ${c}" data-i="${i}" ${(T.answered||T.gone.includes(i))?"disabled":""}><span class="l">${L[i]}</span><span>${o}</span></button>`}).join("")}</div>
+  ${!T.answered?`<div class="toolrow"><button class="btn ghost" id="pot" ${S.potions<1||T.gone.length?"disabled":""}>🧪 Випити «Випий мене»</button>${tk.src?`<span class="src">Завдання ЗНО № ${tk.src} · zno.osvita.ua</span>`:""}</div>`:""}`;
+}
+function bindMcq(tk){
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{T.pick=+b.dataset.i;finish(T.pick===tk.a)});
+  const p=document.getElementById("pot");
+  if(p) p.onclick=()=>{ if(S.potions<1)return; S.potions--;
+    const wrong=tk.opts.map((_,i)=>i).filter(i=>i!==tk.a).sort(()=>Math.random()-.5).slice(0,2);
+    T.gone=wrong; toast("Ти зменшилася — і дві хибні відповіді зникли з поля зору"); render(); };
+}
+
+/* ---- SORT ---- */
+function sortT(tk){
+  if(!T.place) T.place=tk.items.map(()=>-1);
+  const chip=(i)=>{let c=""; if(T.answered) c=T.place[i]===tk.items[i][1]?"ok":"bad"; else if(T.sel===i) c="sel";
+    return `<button class="chip ${c}" data-c="${i}" ${T.answered?"disabled":""}>${tk.items[i][0]}${T.answered&&T.place[i]!==tk.items[i][1]?` → ${tk.bins[tk.items[i][1]]}`:""}</button>`;};
+  const free=tk.items.map((_,i)=>i).filter(i=>T.place[i]===-1);
+  return `<p class="q">${tk.q}</p>
+   <div class="chips">${free.length?free.map(chip).join(""):`<span class="muted">Усі слова розкладено.</span>`}</div>
+   <div class="bins">${tk.bins.map((b,bi)=>`<div class="bin" data-b="${bi}" role="button" tabindex="0"><h4>${b}</h4><div class="chips">${tk.items.map((_,i)=>i).filter(i=>T.place[i]===bi).map(chip).join("")}</div></div>`).join("")}</div>
+   ${!T.answered?`<div class="toolrow"><span class="muted" style="font-size:14px">До слова на полиці можна торкнутися знову й перекласти.</span><button class="btn" id="chk" ${free.length?"disabled":""}>Перевірити полиці</button></div>`:""}`;
+}
+function bindSort(tk){
+  if(T.answered) return;
+  app.querySelectorAll(".chip").forEach(c=>c.onclick=(e)=>{e.stopPropagation();const i=+c.dataset.c;T.sel=T.sel===i?undefined:i;task();});
+  app.querySelectorAll(".bin").forEach(b=>{const f=()=>{if(T.sel===undefined)return;T.place[T.sel]=+b.dataset.b;T.sel=undefined;task();};b.onclick=f;b.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f();}}});
+  const k=document.getElementById("chk"); if(k) k.onclick=()=>finish(T.place.every((p,i)=>p===tk.items[i][1]));
+}
+
+/* ---- CIPHER ---- */
+function cipher(tk){
+  if(!T.ch) T.ch=tk.rows.map(()=>-1);
+  const rows=tk.rows.map((r,ri)=>{
+    const btn=(k)=>{const opt=r[k+1];let c=T.ch[ri]===k?"sel":"";
+      if(T.answered){const right=tk.word[ri]===opt[1]; if(right)c="ok"; else if(T.ch[ri]===k)c="bad"; else c="";}
+      return `<button data-r="${ri}" data-k="${k}" class="${c}" ${T.answered?"disabled":""}>${opt[0]}</button>`;};
+    return `<div class="ci"><span>${r[0]}</span><div class="pair">${btn(0)}${btn(1)}</div></div>`;}).join("");
+  const letters=T.answered?T.ch.map((k,ri)=>tk.rows[ri][k+1][1]):tk.word.split("").map(()=>"?");
+  return `<p class="q">${tk.q}</p>${rows}
+   <div class="letters" aria-label="Розшифроване слово">${letters.map(x=>`<span>${x}</span>`).join("")}</div>
+   ${!T.answered?`<div class="toolrow"><span class="muted" style="font-size:14px">Підказка Кота: це слово — і птах, і числівник.</span><button class="btn" id="dec" ${T.ch.includes(-1)?"disabled":""}>Розшифрувати</button></div>`:""}`;
+}
+function bindCipher(tk){
+  if(T.answered) return;
+  app.querySelectorAll(".pair button").forEach(b=>b.onclick=()=>{T.ch[+b.dataset.r]=+b.dataset.k;task();});
+  const d=document.getElementById("dec"); if(d) d.onclick=()=>{const w=T.ch.map((k,ri)=>tk.rows[ri][k+1][1]).join("");finish(w===tk.word);};
+}
+
+/* ---- MATCH ---- */
+function match(tk){
+  if(!T.m) T.m=tk.left.map(()=>-1);
+  return `<p class="q">${tk.q}</p>
+  <div class="two">
+    <div><strong class="hl">Числівник</strong><ol style="margin:6px 0 0;padding-left:22px">${tk.left.map(x=>`<li>${x}</li>`).join("")}</ol></div>
+    <div><strong class="hl">Іменник</strong><ul style="list-style:none;margin:6px 0 0;padding:0">${tk.right.map((x,i)=>`<li><b>${L[i]}</b> ${x}</li>`).join("")}</ul></div>
+  </div>
+  <div class="mgrid"><table><tr><th></th>${tk.right.map((_,i)=>`<th>${L[i]}</th>`).join("")}</tr>
+   ${tk.left.map((_,r)=>`<tr><th>${r+1}</th>${tk.right.map((_,c)=>{let cl=T.m[r]===c?"sel":"";
+      if(T.answered){ if(tk.a[r]===c) cl="ok"; else if(T.m[r]===c) cl="bad"; else cl="";}
+      return `<td><button data-r="${r}" data-c="${c}" class="${cl}" aria-label="${r+1} — ${L[c]}" ${T.answered?"disabled":""}>${cl?"✕":""}</button></td>`}).join("")}</tr>`).join("")}
+  </table></div>
+  ${!T.answered?`<div class="toolrow"><span class="muted" style="font-size:14px">Як у бланку НМТ: по одній позначці в кожному рядку.</span><button class="btn" id="mchk" ${T.m.includes(-1)?"disabled":""}>Подати вердикт</button></div>`:""}`;
+}
+function bindMatch(tk){
+  if(T.answered) return;
+  app.querySelectorAll(".mgrid td button").forEach(b=>b.onclick=()=>{T.m[+b.dataset.r]=+b.dataset.c;task();});
+  const k=document.getElementById("mchk"); if(k) k.onclick=()=>finish(T.m.every((v,i)=>v===tk.a[i]));
+}
+
+function bind(tk){({mcq:bindMcq,sort:bindSort,cipher:bindCipher,match:bindMatch})[tk.type](tk);}
+
+function finish(ok){
+  T.answered=true; T.ok=ok;
+  S.res[idx(S.st,S.t)]=ok;
+  toast(ok?`🧩 Фрагмент мапи № ${idx(S.st,S.t)+1} — твій!`:"Клаптик мапи затерся. Прочитай пояснення — і вперед!");
+  render();
+}
+function showAfter(tk){
+  const last=S.t===3;
+  document.getElementById("after").innerHTML=`<div class="expl"><span class="v ${T.ok?"y":"n"}">${T.ok?"Правильно!":"Не зовсім."}</span> ${tk.ex}</div>
+   <div class="toolrow"><span></span><button class="btn" id="nx">${last?"Забрати ключ":"Наступне завдання"}</button></div>`;
+  document.getElementById("nx").onclick=()=>{
+    if(last){S.done[S.st]=true;S.keys++;
+      const perfect=S.res.slice(S.st*4,S.st*4+4).every(x=>x===true); if(perfect) S.potions++;
+      T={};S.screen="stationEnd";}
+    else{S.t++;T={};}
+    render();scrollTo(0,0);
+  };
+  document.getElementById("nx").focus({preventScroll:true});
+}
+
+function stationEnd(){
+  const s=STATIONS[S.st]; const got=S.res.slice(S.st*4,S.st*4+4).filter(x=>x===true).length;
+  app.innerHTML=`<div class="banner">Ключ № ${S.st+1} отримано</div>
+  <div class="side"><div>
+   <div class="card speaker"><div class="pic">${ART[s.hero]}</div><div class="bubble"><b>${s.who}</b>${s.outro}</div></div>
+   <div class="card"><div class="row" style="gap:18px"><div class="big">${got}/4</div><div>
+     <p style="margin:0">фрагменти мапи зібрано на цій станції.</p>
+     <p style="margin:4px 0 0" class="muted">${got===4?"Без жодної помилки — тримай бонусну пляшечку «Випий мене» 🧪":"Помилки — теж частина дороги. Перечитай пояснення перед наступною станцією."}</p></div></div>
+     <div class="row" style="margin-top:16px"><button class="btn" id="back">${S.keys===4?"До дверцят у Сад":"Повернутися на мапу"}</button></div></div>
+  </div><aside class="card">${mapHTML()}</aside></div>`;
+  back.onclick=()=>{S.screen="hub";render();scrollTo(0,0)};
+}
+
+function finale(){
+  const sc=score();
+  const verdict=sc>=14?"Ти — справжній Майстер Числівників. Королева навіть забула крикнути «Голови з плечей!».":sc>=10?"Дверцята відчинено! Кілька клаптиків мапи ще затерті — повтори відмінювання сотень і позначення часу.":"Сад відчинено, але мапа ще в плямах. Перечитай конспекти ZNOHUB і спробуй пройти квест ще раз — Кролик зачекає.";
+  app.innerHTML=`<div class="banner">Королівський сад відчинено</div>
+  <div class="side"><div>
+    <div class="card speaker"><div class="pic">${ART.rabbit}</div><div class="bubble"><b>Білий Кролик</b>Чотири ключі — чотири замки — клац! Ми встигли рівно о пів на сьому. Тобто вчасно, а не «в пів сьомої». Бачиш, я теж навчаюся!</div></div>
+    <div class="card"><div class="row" style="gap:18px;align-items:flex-end"><div class="big">${sc}/16</div><p style="margin:0">фрагментів мапи Країни Див</p></div>
+      <p style="margin:14px 0 0;max-width:62ch">${verdict}</p>
+      <div class="row" style="margin-top:16px"><button class="btn" id="again">Пройти квест ще раз</button><button class="btn ghost" id="map">Подивитися мапу</button></div>
+    </div>
+  </div><aside class="card">${mapHTML()}</aside></div>`;
+  again.onclick=()=>{S=fresh();render();scrollTo(0,0)};
+  map.onclick=()=>{S.screen="hub";render();scrollTo(0,0)};
+}
+
+render();
+</script>
+</body>
+</html>
